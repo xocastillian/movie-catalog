@@ -68,9 +68,7 @@ const MovieList: React.FC<Props> = ({
 							</div>
 
 							{movies.length === 0 && (
-								<p className={styles.emptyText}>
-									{responseStatus === SearchResponseStatus.NotFound ? 'Фильм не найден :(' : 'Введите название фильма'}
-								</p>
+								<p className={styles.emptyText}>{responseStatus === SearchResponseStatus.NotFound ? 'Здесь пусто :(' : 'Введите название фильма'}</p>
 							)}
 						</>
 					)}
