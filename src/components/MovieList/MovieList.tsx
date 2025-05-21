@@ -37,7 +37,7 @@ const MovieList: React.FC<Props> = ({
 	isRecent = false,
 	onFavoriteToggle,
 }) => {
-	const scrollRef = useHorizontalScroll<HTMLDivElement>()
+	const scrollRef = useHorizontalScroll<HTMLDivElement>(isRecent && movies.length > 5)
 
 	return (
 		<div className={styles.container}>
