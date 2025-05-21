@@ -22,12 +22,12 @@
 	background: #1a1a1a;
 	color: #fff;
 	display: flex;
-	padding: 24px;
-	border-radius: 8px;
-	max-width: 800px;
+	padding: 48px;
+	border-radius: 12px;
+	max-width: 1200px;
 	width: 100%;
-	gap: 24px;
-	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+	gap: 48px;
+	box-shadow: 0 16px 60px rgba(0, 0, 0, 0.7);
 	opacity: 0;
 	transform: scale(0.96);
 	transition: opacity 0.2s ease, transform 0.2s ease;
@@ -40,8 +40,8 @@
 
 .closeButton {
 	position: absolute;
-	top: 16px;
-	right: 16px;
+	top: 24px;
+	right: 24px;
 	background: transparent;
 	border: none;
 	color: #fff;
@@ -63,16 +63,16 @@
 .content {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
-	line-height: 1.5;
+	gap: 20px;
+	line-height: 1.7;
 	color: #f0f0f0;
-	font-size: 16px;
+	font-size: 18px;
 }
 
 .content h2 {
-	margin: 0 0 8px;
-	font-size: 22px;
-	font-weight: 600;
+	margin: 0;
+	font-size: 28px;
+	font-weight: 700;
 	color: #fff;
 }
 
@@ -83,4 +83,29 @@
 .content strong {
 	color: #bbb;
 	font-weight: 500;
+}
+
+.bookmarkButton {
+	margin-top: 32px;
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	background: none;
+	border: 1px solid #555;
+	border-radius: 6px;
+	padding: 12px 20px;
+	color: #ccc;
+	cursor: pointer;
+	transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+	font-size: 16px;
+}
+
+.bookmarkButton:hover {
+	background: #333;
+	color: #fff;
+	border-color: #888;
+}
+
+.bookmarkText {
+	font-size: 16px;
 }
