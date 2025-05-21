@@ -12,10 +12,8 @@
 
 html,
 body {
-	max-width: 1080px;
 	overflow-x: hidden;
-	margin: 30 auto;
-	height: 100vh;
+	height: calc(100vh + 30px);
 }
 
 body {
@@ -41,4 +39,9 @@ a {
 	html {
 		color-scheme: dark;
 	}
+}
+
+main {
+	max-width: 1080px;
+	margin: 0 auto;
 }

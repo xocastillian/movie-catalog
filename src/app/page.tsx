@@ -2,11 +2,7 @@ import MovieList from '@/components/MovieList/MovieList'
 import React from 'react'
 
 const Home = () => {
-	return (
-		<div>
-			<MovieList />
-		</div>
-	)
+	return <MovieList />
 }
 
 export default Home

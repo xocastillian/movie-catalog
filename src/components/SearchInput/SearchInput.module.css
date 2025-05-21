@@ -12,6 +12,8 @@
 	border: 1px solid #ccc;
 	border-radius: 8px;
 	box-sizing: border-box;
+	background-color: #fff;
+	color: #000;
 }
 
 .clearButton {
@@ -21,15 +23,10 @@
 	transform: translateY(-50%);
 	background: none;
 	border: none;
-	color: #dedede;
+	color: #000;
 	cursor: pointer;
 	padding: 4px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	transition: color 0.3s ease;
-}
-
-.clearButton:hover {
-	color: #ffffff;
 }

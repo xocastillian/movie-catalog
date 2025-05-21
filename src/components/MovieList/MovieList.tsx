@@ -71,7 +71,7 @@ const MovieList = () => {
 	}
 
 	return (
-		<div>
+		<div className={styles.container}>
 			<SearchInput value={query} onChange={setQuery} />
 
 			{isLoading ? (
