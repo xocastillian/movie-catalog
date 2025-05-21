@@ -5,14 +5,13 @@
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--background: #0a0a0a;
+		--background: #0d0d0d;
 		--foreground: #ededed;
 	}
 }
 
 html,
 body {
-	overflow-x: hidden;
 	height: calc(100vh + 30px);
 }
 

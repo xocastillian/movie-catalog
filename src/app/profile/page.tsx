@@ -1,12 +1,8 @@
+import MovieWidget from '@/components/MovieWidget/MovieWidget'
 import React from 'react'
 
 const ProfilePage = () => {
-	return (
-		<div>
-			<h1>Профиль пользователя</h1>
-			<p>Здесь будет информация о пользователе.</p>
-		</div>
-	)
+	return <MovieWidget localMode />
 }
 
 export default ProfilePage

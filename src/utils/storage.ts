@@ -1,6 +1,8 @@
 import { Movie } from '@/types'
 
 const FAVORITES_KEY = 'favorites'
+const RECENT_KEY = 'recent_movies'
+const MAX_RECENT = 20
 
 export const storage = {
 	get<T>(key: string): T | null {
@@ -56,5 +58,21 @@ export const favoritesStorage = {
 		} else {
 			storage.set(FAVORITES_KEY, [...list, movie])
 		}
+	},
+}
+
+export const recentStorage = {
+	getAll(): Movie[] {
+		return storage.get<Movie[]>(RECENT_KEY) || []
+	},
+
+	add(movie: Movie): void {
+		const existing = recentStorage.getAll().filter(m => m.imdbID !== movie.imdbID)
+		const updated = [movie, ...existing].slice(0, MAX_RECENT)
+		storage.set(RECENT_KEY, updated)
+	},
+
+	clear(): void {
+		storage.remove(RECENT_KEY)
 	},
 }

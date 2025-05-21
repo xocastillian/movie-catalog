@@ -1,8 +1,8 @@
-import MovieList from '@/components/MovieList/MovieList'
 import React from 'react'
+import MovieWidget from '@/components/MovieWidget/MovieWidget'
 
 const Home = () => {
-	return <MovieList />
+	return <MovieWidget />
 }
 
 export default Home

@@ -13,9 +13,10 @@ interface Props {
 	movie: Movie
 	isLoading: boolean
 	onClose: () => void
+	onFavoriteToggle?: () => void
 }
 
-const MovieModal: React.FC<Props> = ({ movie, isLoading, onClose }) => {
+const MovieModal: React.FC<Props> = ({ movie, isLoading, onClose, onFavoriteToggle }) => {
 	const [visible, setVisible] = useState(false)
 	const [isFavorite, setIsFavorite] = useState(false)
 	const hasValidPoster = movie.Poster && movie.Poster.startsWith('http')
@@ -34,6 +35,7 @@ const MovieModal: React.FC<Props> = ({ movie, isLoading, onClose }) => {
 	const toggleFavorite = () => {
 		favoritesStorage.toggle(movie)
 		setIsFavorite(prev => !prev)
+		onFavoriteToggle?.()
 	}
 
 	return (

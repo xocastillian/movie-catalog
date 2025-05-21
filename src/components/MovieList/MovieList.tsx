@@ -1,13 +1,12 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import MovieCard from '../MovieCard/MovieCard'
 import MovieModal from '../MovieModal/MovieModal'
 import Loader from '../Loader/Loader'
 import styles from './MovieList.module.css'
 import { Movie } from '@/types'
-import { fetchMovieById, fetchMoviesBySearch } from '@/api/fetchMovie'
-import SearchInput from '../SearchInput/SearchInput'
+import { useHorizontalScroll } from '@/hooks/useHorizontalScroll'
 
 export enum SearchResponseStatus {
 	Init,
@@ -15,84 +14,70 @@ export enum SearchResponseStatus {
 	NotFound,
 }
 
-let debounceTimer: ReturnType<typeof setTimeout>
+interface Props {
+	movies: Movie[]
+	isLoading: boolean
+	selectedMovie: Movie | null
+	modalLoading: boolean
+	onSelect: (movie: Movie) => void
+	onCloseModal: () => void
+	responseStatus: SearchResponseStatus
+	isRecent?: boolean
+	onFavoriteToggle?: () => void
+}
 
-const MovieList = () => {
-	const [movies, setMovies] = useState<Movie[]>([])
-	const [query, setQuery] = useState('')
-	const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null)
-	const [isLoading, setIsLoading] = useState(false)
-	const [modalLoading, setModalLoading] = useState(false)
-	const [responseStatus, setResponseStatus] = useState<SearchResponseStatus>(SearchResponseStatus.Init)
-
-	useEffect(() => {
-		if (!query.trim()) {
-			setMovies([])
-			setResponseStatus(SearchResponseStatus.Init)
-			return
-		}
-
-		clearTimeout(debounceTimer)
-		setIsLoading(true)
-
-		debounceTimer = setTimeout(() => {
-			fetchMoviesBySearch(query)
-				.then(res => {
-					if (res.length > 0) {
-						setMovies(res)
-						setResponseStatus(SearchResponseStatus.Ok)
-					} else {
-						setMovies([])
-						setResponseStatus(SearchResponseStatus.NotFound)
-					}
-				})
-				.catch(() => {
-					setMovies([])
-					setResponseStatus(SearchResponseStatus.NotFound)
-				})
-				.finally(() => {
-					setIsLoading(false)
-				})
-		}, 500)
-	}, [query])
-
-	const handleSelect = async (movie: Movie) => {
-		setSelectedMovie(movie)
-		setModalLoading(true)
-
-		try {
-			const data = await fetchMovieById(movie.imdbID)
-			setSelectedMovie(prev => (prev ? { ...prev, Plot: data.Plot, imdbRating: data.imdbRating } : null))
-		} catch (e) {
-			console.error(e)
-		} finally {
-			setModalLoading(false)
-		}
-	}
+const MovieList: React.FC<Props> = ({
+	movies,
+	isLoading,
+	selectedMovie,
+	modalLoading,
+	onSelect,
+	onCloseModal,
+	responseStatus,
+	isRecent = false,
+	onFavoriteToggle,
+}) => {
+	const scrollRef = useHorizontalScroll<HTMLDivElement>()
 
 	return (
 		<div className={styles.container}>
-			<SearchInput value={query} onChange={setQuery} />
-
 			{isLoading ? (
 				<Loader />
 			) : (
 				<>
-					<div className={styles.list}>
-						{movies.map(movie => (
-							<div key={movie.imdbID} onClick={() => handleSelect(movie)}>
-								<MovieCard props={movie} />
+					{isRecent ? (
+						<div className={styles.carouselWrapper}>
+							<div className={styles.scrollContainer} ref={scrollRef}>
+								<div className={styles.scrollInner}>
+									{movies.map(movie => (
+										<div className={styles.scrollItem} key={movie.imdbID} onClick={() => onSelect(movie)}>
+											<MovieCard props={movie} />
+										</div>
+									))}
+								</div>
 							</div>
-						))}
-					</div>
+						</div>
+					) : (
+						<>
+							<div className={styles.list}>
+								{movies.map(movie => (
+									<div key={movie.imdbID} onClick={() => onSelect(movie)}>
+										<MovieCard props={movie} />
+									</div>
+								))}
+							</div>
 
-					{movies.length === 0 && (
-						<p className={styles.emptyText}>{responseStatus === SearchResponseStatus.NotFound ? 'Фильм не найден :(' : 'Введите название фильма'}</p>
+							{movies.length === 0 && (
+								<p className={styles.emptyText}>
+									{responseStatus === SearchResponseStatus.NotFound ? 'Фильм не найден :(' : 'Введите название фильма'}
+								</p>
+							)}
+						</>
 					)}
 				</>
 			)}
 
-			{selectedMovie && <MovieModal movie={selectedMovie} isLoading={modalLoading} onClose={() => setSelectedMovie(null)} />}
+			{selectedMovie && <MovieModal movie={selectedMovie} isLoading={modalLoading} onClose={onCloseModal} onFavoriteToggle={onFavoriteToggle} />}
 		</div>
 	)
 }

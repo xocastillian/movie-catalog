@@ -8,12 +8,44 @@
 	justify-content: space-between;
 	row-gap: 30px;
 	column-gap: 16px;
-	margin-top: 30px;
 }
 
 .emptyText {
-	margin-top: 40px;
 	text-align: center;
 	font-size: 18px;
 	color: #aaa;
+}
+
+.carouselWrapper {
+	margin-top: 30px;
+}
+
+.scrollContainer {
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+.scrollContainer::-webkit-scrollbar {
+	height: 8px;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb {
+	background: #666;
+	border-radius: 4px;
+}
+
+.scrollContainer::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.scrollInner {
+	display: flex;
+	gap: 20px;
+	padding-bottom: 20px;
+}
+
+.scrollItem {
+	flex: 0 0 auto;
+	width: 200px;
+	cursor: pointer;
 }
