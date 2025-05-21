@@ -1,0 +1,86 @@
+.overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.6);
+	backdrop-filter: blur(4px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.2s ease;
+}
+
+.overlay.show {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.modal {
+	position: relative;
+	background: #1a1a1a;
+	color: #fff;
+	display: flex;
+	padding: 24px;
+	border-radius: 8px;
+	max-width: 800px;
+	width: 100%;
+	gap: 24px;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+	opacity: 0;
+	transform: scale(0.96);
+	transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.modal.show {
+	opacity: 1;
+	transform: scale(1);
+}
+
+.closeButton {
+	position: absolute;
+	top: 16px;
+	right: 16px;
+	background: transparent;
+	border: none;
+	color: #fff;
+	cursor: pointer;
+	z-index: 10;
+	padding: 4px;
+	line-height: 0;
+	transition: opacity 0.2s ease;
+}
+
+.closeButton:hover {
+	opacity: 0.7;
+}
+
+.poster {
+	flex-shrink: 0;
+}
+
+.content {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	line-height: 1.5;
+	color: #f0f0f0;
+	font-size: 16px;
+}
+
+.content h2 {
+	margin: 0 0 8px;
+	font-size: 22px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.content p {
+	margin: 0;
+}
+
+.content strong {
+	color: #bbb;
+	font-weight: 500;
+}

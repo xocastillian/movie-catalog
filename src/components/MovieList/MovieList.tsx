@@ -5,13 +5,15 @@ import MovieCard from '../MovieCard/MovieCard'
 import styles from './MovieList.module.css'
 import { Movie } from '@/types'
 import { fetchMovieById, fetchMoviesBySearch } from '@/api/fetchMovie'
+import MovieModal from '../MovieModal/MovieModal'
 
 let debounceTimer: ReturnType<typeof setTimeout>
 
 const MovieList = () => {
 	const [movies, setMovies] = useState<Movie[]>([])
-	const [expanded, setExpanded] = useState<string | null>(null)
 	const [query, setQuery] = useState('')
+	const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null)
+	const [isLoading, setIsLoading] = useState(false)
 
 	useEffect(() => {
 		if (!query.trim()) {
@@ -27,23 +29,18 @@ const MovieList = () => {
 		}, 500)
 	}, [query])
 
-	const handleToggle = async (imdbID: string) => {
-		if (expanded === imdbID) {
-			setExpanded(null)
-			return
-		}
+	const handleSelect = async (movie: Movie) => {
+		setSelectedMovie(movie)
+		setIsLoading(true)
 
-		const movie = movies.find(m => m.imdbID === imdbID)
-		if (!movie?.Plot) {
-			try {
-				const data = await fetchMovieById(imdbID)
-				setMovies(prev => prev.map(m => (m.imdbID === imdbID ? { ...m, Plot: data.Plot, imdbRating: data.imdbRating } : m)))
-			} catch (e) {
-				console.error(e)
-			}
+		try {
+			const data = await fetchMovieById(movie.imdbID)
+			setSelectedMovie(prev => (prev ? { ...prev, Plot: data.Plot, imdbRating: data.imdbRating } : null))
+		} catch (e) {
+			console.error(e)
+		} finally {
+			setIsLoading(false)
 		}
-
-		setExpanded(imdbID)
 	}
 
 	return (
@@ -52,11 +49,13 @@ const MovieList = () => {
 
 			<div className={styles.list}>
 				{movies.map(movie => (
-					<div key={movie.imdbID} onClick={() => handleToggle(movie.imdbID)}>
-						<MovieCard props={{ ...movie, Plot: movie.Plot, imdbRating: movie.imdbRating }} isExpanded={expanded === movie.imdbID} />
+					<div key={movie.imdbID} onClick={() => handleSelect(movie)}>
+						<MovieCard props={movie} />
 					</div>
 				))}
 			</div>
+
+			{selectedMovie && <MovieModal movie={selectedMovie} isLoading={isLoading} onClose={() => setSelectedMovie(null)} />}
 		</div>
 	)
 }
