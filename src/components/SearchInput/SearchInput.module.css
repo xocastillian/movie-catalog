@@ -1,0 +1,35 @@
+.wrapper {
+	position: relative;
+	width: 100%;
+	max-width: 400px;
+	margin: 0 auto 24px;
+}
+
+.input {
+	width: 100%;
+	padding: 10px 36px 10px 16px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	box-sizing: border-box;
+}
+
+.clearButton {
+	position: absolute;
+	top: 50%;
+	right: 12px;
+	transform: translateY(-50%);
+	background: none;
+	border: none;
+	color: #dedede;
+	cursor: pointer;
+	padding: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: color 0.3s ease;
+}
+
+.clearButton:hover {
+	color: #ffffff;
+}
