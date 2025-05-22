@@ -6,8 +6,7 @@ import { fetchMovieById } from '@/shared/api/omdb'
 import { useMovieSearch } from '@/shared/hooks/useMovieSearch'
 import { Movie, MovieFull, SearchResponseStatus } from '@/shared/types'
 import { favoritesStorage, recentStorage } from '@/shared/utils/storage'
-import { MovieList } from '../MovieList'
-import { SearchInput } from '../SearchInput'
+import { MovieList, SearchInput } from '@/shared/components'
 
 interface Props {
 	localMode?: boolean

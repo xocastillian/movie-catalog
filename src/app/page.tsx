@@ -1,8 +1,8 @@
-import { MovieWidget } from '@/shared/components'
 import React from 'react'
+import { HomePage } from '@/page'
 
 const Home = () => {
-	return <MovieWidget />
+	return <HomePage />
 }
 
 export default Home

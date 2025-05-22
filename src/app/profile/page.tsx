@@ -1,8 +1,8 @@
-import { MovieWidget } from '@/shared/components'
+import { ProfilePage } from '@/page'
 import React from 'react'
 
-const ProfilePage = () => {
-	return <MovieWidget localMode title='Избранное' />
+const Profile = () => {
+	return <ProfilePage />
 }
 
-export default ProfilePage
+export default Profile
