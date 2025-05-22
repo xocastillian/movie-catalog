@@ -31,6 +31,7 @@ src/
 │   ├── hooks/            # Кастомные хуки
 │   ├── providers/        # Провайдеры, например для React Query
 │   ├── types/            # Типы
+│   ├── constants/        # Константы
 │   └── utils/            # Вспомогательные функции
 
 └── widgets/
