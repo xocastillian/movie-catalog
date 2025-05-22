@@ -1,8 +1,5 @@
 import { Movie } from '@/shared/types'
-
-const FAVORITES_KEY = 'favorites'
-const RECENT_KEY = 'recent_movies'
-const MAX_RECENT = 20
+import { FAVORITES_KEY, MAX_RECENT, RECENT_KEY } from '../constants'
 
 // Базовая обёртка над localStorage
 export const storage = {

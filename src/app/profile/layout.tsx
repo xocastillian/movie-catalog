@@ -8,8 +8,8 @@ interface ProfileLayoutProps {
 
 export const generateMetadata = async (): Promise<Metadata> => {
 	return {
-		title: 'Кино каталог | Профиль',
-		description: 'Избранные фильмы',
+		title: 'Movie Catalog | Profile',
+		description: 'Favorite movies',
 	}
 }
 

@@ -14,7 +14,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, showQueryPre
 	return (
 		<div className={styles.wrapperWithPreview}>
 			<div className={styles.wrapper}>
-				<input type='text' placeholder='Искать...' value={value} onChange={e => onChange(e.target.value)} className={styles.input} />
+				<input type='text' placeholder='Search...' value={value} onChange={e => onChange(e.target.value)} className={styles.input} />
 				{value && (
 					<button className={styles.clearButton} onClick={() => onChange('')} aria-label='Очистить поиск' type='button'>
 						<X size={18} />

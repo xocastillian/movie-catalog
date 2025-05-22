@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
 import { fetchMoviesBySearch } from '@/shared/api/omdb'
 import { SearchResponseStatus } from '@/shared/types'
-import { staleTime } from '../constants'
+import { STALE_TIME } from '../constants'
 
 export const useMovieSearch = (debounceDelay = 500) => {
 	const [query, setQuery] = useState('')
@@ -19,7 +19,7 @@ export const useMovieSearch = (debounceDelay = 500) => {
 		queryKey: ['movies', trimmed],
 		queryFn: () => fetchMoviesBySearch(trimmed),
 		enabled: isValidQuery,
-		staleTime: staleTime,
+		staleTime: STALE_TIME,
 		retry: false, // по умолчанию Реакт квери повторяет запрос 3-4 раза, если приходит ошибка
 	})
 

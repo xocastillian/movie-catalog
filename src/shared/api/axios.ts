@@ -1,10 +1,7 @@
 import axios from 'axios'
 
-const API_KEY = process.env.NEXT_PUBLIC_OMDB_API_KEY
-
-if (!API_KEY) {
-	throw new Error('Отсутствует или неверный OMDb API ключ.')
-}
+const FALLBACK_API_KEY = 'abe90f5d' // Ну это только для того, чтобы вам не пришлось свой создавать)
+const API_KEY = process.env.NEXT_PUBLIC_OMDB_API_KEY || FALLBACK_API_KEY
 
 export const axiosInstance = axios.create({
 	baseURL: 'https://www.omdbapi.com/',

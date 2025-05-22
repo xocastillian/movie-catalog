@@ -8,7 +8,7 @@ const Header: React.FC = () => {
 		<header className={styles.header}>
 			<div className={styles.container}>
 				<Link href='/' className={styles.logo}>
-					<span>Типа лого</span>
+					<span>Kinda logo</span>
 				</Link>
 
 				<nav className={styles.nav}>

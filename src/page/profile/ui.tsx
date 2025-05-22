@@ -1,5 +1,5 @@
 import { MovieWidget } from '@/widgets'
 
 export const ProfilePage = () => {
-	return <MovieWidget localMode title='Избранное' />
+	return <MovieWidget localMode title='Favorites' />
 }

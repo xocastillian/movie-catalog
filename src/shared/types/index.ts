@@ -1,14 +1,9 @@
-// тип для фильма из списка
 export type Movie = {
 	Title: string
 	Year: string
 	imdbID: string
 	Type: 'movie' | 'series' | 'episode'
 	Poster: string
-}
-
-// детальный тип для фильма при раскрытии модалки
-export type MovieFull = Movie & {
 	Plot: string
 	imdbRating: string
 }

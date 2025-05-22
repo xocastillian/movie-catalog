@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 import { recentStorage } from '@/shared/utils/storage'
-import { MovieFull } from '@/shared/types'
+import { Movie } from '@/shared/types'
 
 export const useRecentMovies = () => {
-	const [recent, setRecent] = useState<MovieFull[]>([])
+	const [recent, setRecent] = useState<Movie[]>([])
 
-	const refresh = () => setRecent(recentStorage.getAll() as MovieFull[])
+	const refresh = () => setRecent(recentStorage.getAll() as Movie[])
 
 	useEffect(refresh, [])
 
-	const addRecent = (movie: MovieFull) => {
+	const addRecent = (movie: Movie) => {
 		recentStorage.add(movie)
 		refresh()
 	}

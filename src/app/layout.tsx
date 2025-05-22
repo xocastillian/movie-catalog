@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-	title: 'Кино каталог | Главная',
-	description: 'Тестовое задание Uppercase',
+	title: 'Movie Catalog | Home',
+	description: 'TZ for Uppercase',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

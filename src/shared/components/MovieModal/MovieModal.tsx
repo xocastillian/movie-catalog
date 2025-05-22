@@ -4,13 +4,13 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Bookmark, BookmarkCheck, X } from 'lucide-react'
 import styles from './MovieModal.module.css'
-import { MovieFull } from '@/shared/types'
+import { Movie } from '@/shared/types'
 import { hasValidPoster } from '@/shared/utils/movie'
 import Loader from '../Loader/Loader'
 import noDataimg from '../../../../public/NoData.png'
 
 interface Props {
-	movie: MovieFull
+	movie: Movie
 	isLoading: boolean
 	onClose: () => void
 	onFavoriteToggle?: () => void
@@ -70,7 +70,7 @@ const MovieModal: React.FC<Props> = ({ movie, isLoading, onClose, onFavoriteTogg
 
 							<button onClick={onFavoriteToggle} className={styles.bookmarkButton} aria-label='Toggle favorite'>
 								{isFavorite ? <BookmarkCheck size={20} /> : <Bookmark size={20} />}
-								<span className={styles.bookmarkText}>{isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}</span>
+								<span className={styles.bookmarkText}>{isFavorite ? 'Remove from favorites' : 'Add to favorites'}</span>
 							</button>
 						</div>
 					</>
