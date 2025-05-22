@@ -1,45 +1,21 @@
-import { useEffect, useState } from 'react'
-import { Movie, SearchResponseStatus } from '../types'
-import { fetchMoviesBySearch } from '../api/omdb'
+import { useMemo, useState } from 'react'
+import { SearchResponseStatus } from '../types'
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
 
 // хук для поиска фильмов чрез строку поиска
+import { useSearchMoviesQuery } from './useSearchMoviesQuery'
+
 export const useMovieSearch = (debounceDelay = 500) => {
 	const [query, setQuery] = useState('')
-	const [movies, setMovies] = useState<Movie[]>([])
-	const [isLoading, setIsLoading] = useState(false)
-	const [responseStatus, setResponseStatus] = useState<SearchResponseStatus>(SearchResponseStatus.Init)
-
 	const debouncedQuery = useDebouncedValue(query, debounceDelay)
 
-	useEffect(() => {
-		if (!debouncedQuery.trim()) {
-			setMovies([])
-			setResponseStatus(SearchResponseStatus.Init)
-			return
-		}
+	const { data: movies = [], isFetching: isLoading, isError } = useSearchMoviesQuery(debouncedQuery, !!debouncedQuery.trim())
 
-		setIsLoading(true)
-
-		fetchMoviesBySearch(debouncedQuery)
-			.then(res => {
-				if (res.length > 0) {
-					setMovies(res)
-					setResponseStatus(SearchResponseStatus.Ok)
-				} else {
-					setMovies([])
-					setResponseStatus(SearchResponseStatus.NotFound)
-				}
-			})
-			.catch(error => {
-				console.error('Ошибка при поиске фильмов:', error)
-				setMovies([])
-				setResponseStatus(SearchResponseStatus.NotFound)
-			})
-			.finally(() => {
-				setIsLoading(false)
-			})
-	}, [debouncedQuery])
+	const responseStatus = useMemo(() => {
+		if (!debouncedQuery.trim()) return SearchResponseStatus.Init
+		if (isError || movies.length === 0) return SearchResponseStatus.NotFound
+		return SearchResponseStatus.Ok
+	}, [debouncedQuery, isError, movies])
 
 	return {
 		query,

@@ -8,9 +8,12 @@ if (!API_KEY) {
 
 export const axiosInstance = axios.create({
 	baseURL: 'https://www.omdbapi.com/',
-	params: {
-		apikey: API_KEY,
-	},
 })
 
-// Простенький конфиг для axios
+axiosInstance.interceptors.request.use(config => {
+	config.params = {
+		...config.params,
+		apikey: API_KEY,
+	}
+	return config
+})

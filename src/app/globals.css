@@ -10,11 +10,6 @@
 	}
 }
 
-html,
-body {
-	height: calc(100vh + 30px);
-}
-
 body {
 	color: var(--foreground);
 	background: var(--background);

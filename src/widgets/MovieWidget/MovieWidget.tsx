@@ -9,6 +9,7 @@ import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
 import { fetchMovieById } from '@/shared/api/omdb'
 import { Movie, MovieFull, SearchResponseStatus } from '@/shared/types'
 import { MovieList, MovieModal, SearchInput } from '@/shared/components'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface Props {
 	localMode?: boolean
@@ -24,6 +25,8 @@ const MovieWidget: React.FC<Props> = ({ localMode = false, title, initialMovies 
 	const { favorites, toggleFavorite, isFavorite } = useFavorites()
 	const { recent, addRecent } = useRecentMovies()
 	const { query: searchQuery, setQuery: setSearchQuery, movies, isLoading, responseStatus } = useMovieSearch()
+
+	const queryClient = useQueryClient()
 
 	const currentQuery = localMode ? localQuery : searchQuery
 	const debouncedQuery = useDebouncedValue(currentQuery, 500)
@@ -51,7 +54,12 @@ const MovieWidget: React.FC<Props> = ({ localMode = false, title, initialMovies 
 			setModalLoading(true)
 
 			try {
-				const full = await fetchMovieById(movie.imdbID)
+				const full = await queryClient.fetchQuery({
+					queryKey: ['movie', movie.imdbID],
+					queryFn: () => fetchMovieById(movie.imdbID),
+					staleTime: 1000 * 60 * 10,
+				})
+
 				const fullMovie = { ...movie, ...full }
 				setSelectedMovie(fullMovie)
 				addRecent(fullMovie)
@@ -61,7 +69,7 @@ const MovieWidget: React.FC<Props> = ({ localMode = false, title, initialMovies 
 				setModalLoading(false)
 			}
 		},
-		[addRecent]
+		[addRecent, queryClient]
 	)
 
 	const handleCloseModal = useCallback(() => {
