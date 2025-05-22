@@ -10,6 +10,7 @@
 	opacity: 0;
 	pointer-events: none;
 	transition: opacity 0.2s ease;
+	padding: 20px;
 }
 
 .overlay.show {
@@ -22,11 +23,11 @@
 	background: #1a1a1a;
 	color: #fff;
 	display: flex;
-	padding: 48px;
+	padding: 30px;
 	border-radius: 12px;
 	max-width: 1200px;
 	width: 100%;
-	gap: 48px;
+	gap: 30px;
 	box-shadow: 0 16px 60px rgba(0, 0, 0, 0.7);
 	opacity: 0;
 	transform: scale(0.96);
@@ -98,6 +99,7 @@
 	cursor: pointer;
 	transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 	font-size: 16px;
+	width: 250px;
 }
 
 .bookmarkButton:hover {
@@ -108,4 +110,38 @@
 
 .bookmarkText {
 	font-size: 16px;
+}
+
+@media (max-width: 768px) {
+	.modal {
+		flex-direction: column;
+		padding: 20px;
+		max-width: 100%;
+		max-height: 90vh;
+		overflow-y: auto;
+	}
+
+	.poster {
+		align-self: center;
+	}
+
+	.poster img {
+		width: 100%;
+		height: auto;
+		max-width: 100%;
+	}
+
+	.content {
+		padding-top: 20px;
+		font-size: 16px;
+	}
+
+	.content h2 {
+		font-size: 24px;
+	}
+
+	.bookmarkButton {
+		width: 100%;
+		font-size: 15px;
+	}
 }

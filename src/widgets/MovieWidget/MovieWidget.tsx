@@ -21,13 +21,10 @@ const MovieWidget: React.FC<Props> = ({ localMode = false, title, initialMovies 
 	const [selectedMovie, setSelectedMovie] = useState<MovieFull | null>(null)
 	const [modalLoading, setModalLoading] = useState(false)
 	const [localQuery, setLocalQuery] = useState('')
-
 	const { favorites, toggleFavorite, isFavorite } = useFavorites()
 	const { recent, addRecent } = useRecentMovies()
 	const { query: searchQuery, setQuery: setSearchQuery, movies, isLoading, responseStatus } = useMovieSearch()
-
 	const queryClient = useQueryClient()
-
 	const currentQuery = localMode ? localQuery : searchQuery
 	const debouncedQuery = useDebouncedValue(currentQuery, 500)
 

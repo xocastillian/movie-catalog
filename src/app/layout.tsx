@@ -24,10 +24,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang='ru' className={`${geistSans.variable} ${geistMono.variable}`}>
-			<body className='min-h-screen bg-[#0d0d0d] text-white'>
+			<body>
 				<QueryProvider>
 					<Header />
-					<main className='px-4 pb-10'>{children}</main>
+					<main>{children}</main>
 				</QueryProvider>
 			</body>
 		</html>

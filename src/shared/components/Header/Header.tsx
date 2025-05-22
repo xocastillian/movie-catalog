@@ -8,7 +8,7 @@ const Header: React.FC = () => {
 		<header className={styles.header}>
 			<div className={styles.container}>
 				<Link href='/' className={styles.logo}>
-					<span>КиноКаталог (типа лого)</span>
+					<span>Типа лого</span>
 				</Link>
 
 				<nav className={styles.nav}>
