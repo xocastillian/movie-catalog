@@ -16,9 +16,6 @@ http://localhost:3001
 
 ОПИСАНИЕ АРХИТЕКТУРЫ
 
-<details>
-<summary>Структура проекта</summary>
-
 ```
 src/
 ├── app/
@@ -41,8 +38,6 @@ src/
 
 package.json              # Зависимости и скрипты
 ```
-
-</details>
 
 РЕАЛИЗОВАННЫЕ ФИЧИ
 

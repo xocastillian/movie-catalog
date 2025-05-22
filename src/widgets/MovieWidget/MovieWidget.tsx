@@ -10,6 +10,7 @@ import { fetchMovieById } from '@/shared/api/omdb'
 import { Movie, MovieFull, SearchResponseStatus } from '@/shared/types'
 import { MovieList, MovieModal, SearchInput } from '@/shared/components'
 import { useQueryClient } from '@tanstack/react-query'
+import { staleTime } from '@/shared/constants'
 
 interface Props {
 	localMode?: boolean
@@ -28,22 +29,21 @@ const MovieWidget: React.FC<Props> = ({ localMode = false, title, initialMovies 
 	const currentQuery = localMode ? localQuery : searchQuery
 	const debouncedQuery = useDebouncedValue(currentQuery, 500)
 
-	const filteredFavorites = useMemo(() => {
-		const q = debouncedQuery.trim().toLowerCase()
-		return localMode && q ? favorites.filter(m => m.Title.toLowerCase().includes(q)) : favorites
-	}, [localMode, favorites, debouncedQuery])
-
 	const currentMovies = useMemo(() => {
-		if (localMode) return filteredFavorites
+		const q = debouncedQuery.trim().toLowerCase()
+
+		if (localMode) return q ? favorites.filter(m => m.Title.toLowerCase().includes(q)) : favorites
 		if (searchQuery.trim()) return movies
+
 		return initialMovies
-	}, [localMode, filteredFavorites, movies, searchQuery, initialMovies])
+	}, [localMode, favorites, debouncedQuery, searchQuery, movies, initialMovies])
 
 	const currentResponse = useMemo(() => {
-		if (localMode) return filteredFavorites.length > 0 ? SearchResponseStatus.Ok : SearchResponseStatus.NotFound
+		if (localMode) return currentMovies.length ? SearchResponseStatus.Ok : SearchResponseStatus.NotFound
 		if (searchQuery.trim()) return responseStatus
+
 		return SearchResponseStatus.Ok
-	}, [localMode, filteredFavorites.length, responseStatus, searchQuery])
+	}, [localMode, currentMovies, searchQuery, responseStatus])
 
 	const handleSelect = useCallback(
 		async (movie: Movie) => {
@@ -54,7 +54,7 @@ const MovieWidget: React.FC<Props> = ({ localMode = false, title, initialMovies 
 				const full = await queryClient.fetchQuery({
 					queryKey: ['movie', movie.imdbID],
 					queryFn: () => fetchMovieById(movie.imdbID),
-					staleTime: 1000 * 60 * 10,
+					staleTime: staleTime,
 				})
 
 				const fullMovie = { ...movie, ...full }

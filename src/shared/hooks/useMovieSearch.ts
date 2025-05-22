@@ -1,21 +1,33 @@
-import { useMemo, useState } from 'react'
-import { SearchResponseStatus } from '../types'
+import { useState, useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
-
-// хук для поиска фильмов чрез строку поиска
-import { useSearchMoviesQuery } from './useSearchMoviesQuery'
+import { fetchMoviesBySearch } from '@/shared/api/omdb'
+import { SearchResponseStatus } from '@/shared/types'
+import { staleTime } from '../constants'
 
 export const useMovieSearch = (debounceDelay = 500) => {
 	const [query, setQuery] = useState('')
 	const debouncedQuery = useDebouncedValue(query, debounceDelay)
+	const trimmed = debouncedQuery.trim()
+	const isValidQuery = !!trimmed
 
-	const { data: movies = [], isFetching: isLoading, isError } = useSearchMoviesQuery(debouncedQuery, !!debouncedQuery.trim())
+	const {
+		data: movies = [],
+		isFetching: isLoading,
+		isError,
+	} = useQuery({
+		queryKey: ['movies', trimmed],
+		queryFn: () => fetchMoviesBySearch(trimmed),
+		enabled: isValidQuery,
+		staleTime: staleTime,
+		retry: false, // по умолчанию Реакт квери повторяет запрос 3-4 раза, если приходит ошибка
+	})
 
 	const responseStatus = useMemo(() => {
-		if (!debouncedQuery.trim()) return SearchResponseStatus.Init
+		if (!isValidQuery) return SearchResponseStatus.Init
 		if (isError || movies.length === 0) return SearchResponseStatus.NotFound
 		return SearchResponseStatus.Ok
-	}, [debouncedQuery, isError, movies])
+	}, [isValidQuery, isError, movies])
 
 	return {
 		query,
