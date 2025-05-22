@@ -1,0 +1,1 @@
+export {default as MovieWidget} from './MovieWidget'

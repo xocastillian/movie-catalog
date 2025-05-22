@@ -1,33 +1,31 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
-import Header from '@/components/Header/Header'
+import { Header } from '@/shared/components'
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
 	subsets: ['latin'],
+	display: 'swap',
 })
 
 const geistMono = Geist_Mono({
 	variable: '--font-geist-mono',
 	subsets: ['latin'],
+	display: 'swap',
 })
 
 export const metadata: Metadata = {
-	title: 'Поиск фильмов, сериалов и тд.',
-	description: 'ТЗ Uppercase',
+	title: 'Кино каталог | Главная',
+	description: 'Тестовое задание Uppercase',
 }
 
-export default function RootLayout({
-	children,
-}: Readonly<{
-	children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang='en'>
-			<body className={`${geistSans.variable} ${geistMono.variable}`}>
+		<html lang='ru' className={`${geistSans.variable} ${geistMono.variable}`}>
+			<body className='min-h-screen bg-[#0d0d0d] text-white'>
 				<Header />
-				<main>{children}</main>
+				<main className='px-4 pb-10'>{children}</main>
 			</body>
 		</html>
 	)

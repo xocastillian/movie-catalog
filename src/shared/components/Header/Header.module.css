@@ -1,0 +1,47 @@
+.header {
+	width: 100%;
+	border-bottom: 1px solid #333;
+	color: #fff;
+	background-color: #0a0a0a;
+	position: sticky;
+	top: 0;
+	z-index: 10;
+}
+
+.container {
+	width: 100%;
+	max-width: 1080px;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 20px 0;
+}
+
+.logo {
+	font-size: 20px;
+	font-weight: 600;
+	text-decoration: none;
+	color: #fff;
+	transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+	opacity: 0.8;
+}
+
+.nav {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+
+.icon {
+	cursor: pointer;
+	color: #ccc;
+	transition: color 0.2s ease;
+}
+
+.icon:hover {
+	color: #fff;
+}

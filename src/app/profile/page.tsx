@@ -1,8 +1,8 @@
-import MovieWidget from '@/components/MovieWidget/MovieWidget'
+import { MovieWidget } from '@/shared/components'
 import React from 'react'
 
 const ProfilePage = () => {
-	return <MovieWidget localMode />
+	return <MovieWidget localMode title='Избранное' />
 }
 
 export default ProfilePage
