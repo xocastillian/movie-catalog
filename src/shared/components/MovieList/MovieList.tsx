@@ -1,34 +1,23 @@
 'use client'
 
 import { useHorizontalScroll } from '@/shared/hooks/useHorizontalScroll'
-import { Movie, MovieFull, SearchResponseStatus } from '@/shared/types'
-import { Loader, MovieCard, MovieModal } from '@/shared/components'
+import { Movie, SearchResponseStatus } from '@/shared/types'
+import { Loader, MovieCard } from '@/shared/components'
 import styles from './MovieList.module.css'
+import { memo } from 'react'
 
 interface Props {
 	movies: Movie[]
 	isLoading: boolean
-	selectedMovie: MovieFull | null
-	modalLoading: boolean
 	onSelect: (movie: Movie) => void
-	onCloseModal: () => void
 	responseStatus: SearchResponseStatus
 	isRecent?: boolean
-	onFavoriteToggle?: () => void
 }
 
-const MovieList: React.FC<Props> = ({
-	movies,
-	isLoading,
-	selectedMovie,
-	modalLoading,
-	onSelect,
-	onCloseModal,
-	responseStatus,
-	isRecent = false,
-	onFavoriteToggle,
-}) => {
+const MovieList: React.FC<Props> = ({ movies, isLoading, onSelect, responseStatus, isRecent = false }) => {
 	const scrollRef = useHorizontalScroll<HTMLDivElement>(isRecent && movies.length > 5)
+
+	const handleClick = (movie: Movie) => () => onSelect(movie)
 
 	const renderList = () => {
 		if (isRecent) {
@@ -37,8 +26,8 @@ const MovieList: React.FC<Props> = ({
 					<div className={styles.scrollContainer} ref={scrollRef}>
 						<div className={styles.scrollInner}>
 							{movies.map(movie => (
-								<div className={styles.scrollItem} key={movie.imdbID} onClick={() => onSelect(movie)}>
-									<MovieCard props={movie} />
+								<div className={styles.scrollItem} key={movie.imdbID} onClick={handleClick(movie)}>
+									<MovieCard movie={movie} />
 								</div>
 							))}
 						</div>
@@ -51,8 +40,8 @@ const MovieList: React.FC<Props> = ({
 			<>
 				<div className={styles.list}>
 					{movies.map(movie => (
-						<div key={movie.imdbID} onClick={() => onSelect(movie)}>
-							<MovieCard props={movie} />
+						<div key={movie.imdbID} onClick={handleClick(movie)}>
+							<MovieCard movie={movie} />
 						</div>
 					))}
 				</div>
@@ -64,13 +53,7 @@ const MovieList: React.FC<Props> = ({
 		)
 	}
 
-	return (
-		<div className={styles.container}>
-			{isLoading ? <Loader /> : renderList()}
-
-			{selectedMovie && <MovieModal movie={selectedMovie} isLoading={modalLoading} onClose={onCloseModal} onFavoriteToggle={onFavoriteToggle} />}
-		</div>
-	)
+	return <div className={styles.container}>{isLoading ? <Loader /> : renderList()}</div>
 }
 
-export default MovieList
+export default memo(MovieList)

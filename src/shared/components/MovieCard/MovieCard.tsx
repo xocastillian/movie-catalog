@@ -6,18 +6,18 @@ import noDataimg from '../../../../public/NoData.png'
 import { hasValidPoster, truncate } from '@/shared/utils/movie'
 
 interface MovieCardProps {
-	props: Movie
+	movie: Movie
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({ props }) => {
+const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
 	return (
 		<div className={styles.card}>
-			<Image className={styles.poster} src={hasValidPoster(props.Poster) ? props.Poster : noDataimg} width={200} height={300} alt='movie img' />
+			<Image className={styles.poster} src={hasValidPoster(movie.Poster) ? movie.Poster : noDataimg} width={200} height={300} alt='movie img' />
 			<div className={styles.descr}>
-				<span className={styles.text}>Title: {truncate(props.Title, 15)}</span>
-				<span className={styles.text}>Year: {props.Year}</span>
-				<span className={styles.text}>imdbID: {props.imdbID}</span>
-				<span className={styles.text}>Type: {props.Type}</span>
+				<span className={styles.text}>Title: {truncate(movie.Title, 15)}</span>
+				<span className={styles.text}>Year: {movie.Year}</span>
+				<span className={styles.text}>imdbID: {movie.imdbID}</span>
+				<span className={styles.text}>Type: {movie.Type}</span>
 			</div>
 		</div>
 	)

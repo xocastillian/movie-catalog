@@ -30,3 +30,16 @@
 	align-items: center;
 	justify-content: center;
 }
+
+.searchQuery {
+	margin-top: 12px;
+	font-size: 16px;
+	color: #ccc;
+	text-align: left;
+	margin-bottom: 30px;
+}
+
+.searchQuery span {
+	color: #fff;
+	font-weight: 500;
+}
