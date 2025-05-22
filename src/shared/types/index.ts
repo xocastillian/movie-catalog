@@ -1,4 +1,5 @@
-export type MovieShort = {
+// тип для фильма из списка
+export type Movie = {
 	Title: string
 	Year: string
 	imdbID: string
@@ -6,13 +7,13 @@ export type MovieShort = {
 	Poster: string
 }
 
-export type MovieFull = MovieShort & {
+// детальный тип для фильма при раскрытии модалки
+export type MovieFull = Movie & {
 	Plot: string
 	imdbRating: string
 }
 
-export type Movie = MovieShort
-
+// использую типа как флаг, чтобы выводить нужную надпись под строкой поиска
 export enum SearchResponseStatus {
 	Init,
 	Ok,

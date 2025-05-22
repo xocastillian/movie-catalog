@@ -3,6 +3,7 @@ import { Movie, SearchResponseStatus } from '../types'
 import { fetchMoviesBySearch } from '../api/omdb'
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
 
+// хук для поиска фильмов чрез строку поиска
 export const useMovieSearch = (debounceDelay = 500) => {
 	const [query, setQuery] = useState('')
 	const [movies, setMovies] = useState<Movie[]>([])

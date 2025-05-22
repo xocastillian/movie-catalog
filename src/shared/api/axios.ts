@@ -12,3 +12,5 @@ export const axiosInstance = axios.create({
 		apikey: API_KEY,
 	},
 })
+
+// Простенький конфиг для axios

@@ -5,7 +5,6 @@ import Image from 'next/image'
 import { Bookmark, BookmarkCheck, X } from 'lucide-react'
 import styles from './MovieModal.module.css'
 import { MovieFull } from '@/shared/types'
-import { favoritesStorage } from '@/shared/utils/storage'
 import { hasValidPoster } from '@/shared/utils/movie'
 import Loader from '../Loader/Loader'
 import noDataimg from '../../../../public/NoData.png'
@@ -15,27 +14,20 @@ interface Props {
 	isLoading: boolean
 	onClose: () => void
 	onFavoriteToggle?: () => void
+	isFavorite?: boolean
 }
 
-const MovieModal: React.FC<Props> = ({ movie, isLoading, onClose, onFavoriteToggle }) => {
+const MovieModal: React.FC<Props> = ({ movie, isLoading, onClose, onFavoriteToggle, isFavorite = false }) => {
 	const [visible, setVisible] = useState(false)
-	const [isFavorite, setIsFavorite] = useState(false)
 
 	useEffect(() => {
 		const timeout = setTimeout(() => setVisible(true), 10)
-		setIsFavorite(favoritesStorage.isFavorite(movie.imdbID))
 		return () => clearTimeout(timeout)
 	}, [movie.imdbID])
 
 	const handleClose = () => {
 		setVisible(false)
 		setTimeout(onClose, 200)
-	}
-
-	const toggleFavorite = () => {
-		favoritesStorage.toggle(movie)
-		setIsFavorite(favoritesStorage.isFavorite(movie.imdbID))
-		onFavoriteToggle?.()
 	}
 
 	return (
@@ -64,18 +56,19 @@ const MovieModal: React.FC<Props> = ({ movie, isLoading, onClose, onFavoriteTogg
 							<p>
 								<strong>imdbID:</strong> {movie.imdbID}
 							</p>
-							{(movie as MovieFull).Plot && (
+
+							{movie.Plot && (
 								<p>
-									<strong>Plot:</strong> {(movie as MovieFull).Plot}
+									<strong>Plot:</strong> {movie.Plot}
 								</p>
 							)}
-							{(movie as MovieFull).imdbRating && (
+							{movie.imdbRating && (
 								<p>
-									<strong>IMDb Rating:</strong> {(movie as MovieFull).imdbRating}
+									<strong>IMDb Rating:</strong> {movie.imdbRating}
 								</p>
 							)}
 
-							<button onClick={toggleFavorite} className={styles.bookmarkButton} aria-label='Toggle favorite'>
+							<button onClick={onFavoriteToggle} className={styles.bookmarkButton} aria-label='Toggle favorite'>
 								{isFavorite ? <BookmarkCheck size={20} /> : <Bookmark size={20} />}
 								<span className={styles.bookmarkText}>{isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}</span>
 							</button>

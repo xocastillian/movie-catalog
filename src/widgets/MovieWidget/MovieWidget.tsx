@@ -1,43 +1,49 @@
 'use client'
 
 import styles from './MovieWidget.module.css'
-import { useEffect, useState, useMemo, useCallback } from 'react'
-import { fetchMovieById } from '@/shared/api/omdb'
+import { useState, useMemo, useCallback } from 'react'
 import { useMovieSearch } from '@/shared/hooks/useMovieSearch'
-import { Movie, MovieFull, SearchResponseStatus } from '@/shared/types'
-import { favoritesStorage, recentStorage } from '@/shared/utils/storage'
-import { MovieList, MovieModal, SearchInput } from '@/shared/components'
+import { useFavorites } from '@/shared/hooks/useFavorites'
+import { useRecentMovies } from '@/shared/hooks/useRecentMovies'
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
+import { fetchMovieById } from '@/shared/api/omdb'
+import { Movie, MovieFull, SearchResponseStatus } from '@/shared/types'
+import { MovieList, MovieModal, SearchInput } from '@/shared/components'
 
 interface Props {
 	localMode?: boolean
 	title?: string
+	initialMovies?: Movie[]
 }
 
-const MovieWidget: React.FC<Props> = ({ localMode = false, title }) => {
+const MovieWidget: React.FC<Props> = ({ localMode = false, title, initialMovies = [] }) => {
 	const [selectedMovie, setSelectedMovie] = useState<MovieFull | null>(null)
 	const [modalLoading, setModalLoading] = useState(false)
-	const [recentMovies, setRecentMovies] = useState<MovieFull[]>([])
 	const [localQuery, setLocalQuery] = useState('')
-	const [favorites, setFavorites] = useState<Movie[]>([])
 
+	const { favorites, toggleFavorite, isFavorite } = useFavorites()
+	const { recent, addRecent } = useRecentMovies()
 	const { query: searchQuery, setQuery: setSearchQuery, movies, isLoading, responseStatus } = useMovieSearch()
-	const debouncedLocalQuery = useDebouncedValue(localQuery, 500)
 
-	useEffect(() => {
-		if (!localMode) {
-			setRecentMovies(recentStorage.getAll() as MovieFull[])
-		} else {
-			const stored = favoritesStorage.getAll()
-			setFavorites(stored)
-		}
-	}, [localMode])
+	const currentQuery = localMode ? localQuery : searchQuery
+	const debouncedQuery = useDebouncedValue(currentQuery, 500)
 
-	const favoriteMovies = useMemo(() => {
-		if (!localMode) return []
-		const trimmed = debouncedLocalQuery.trim().toLowerCase()
-		return trimmed ? favorites.filter(movie => movie.Title.toLowerCase().includes(trimmed)) : favorites
-	}, [debouncedLocalQuery, favorites])
+	const filteredFavorites = useMemo(() => {
+		const q = debouncedQuery.trim().toLowerCase()
+		return localMode && q ? favorites.filter(m => m.Title.toLowerCase().includes(q)) : favorites
+	}, [localMode, favorites, debouncedQuery])
+
+	const currentMovies = useMemo(() => {
+		if (localMode) return filteredFavorites
+		if (searchQuery.trim()) return movies
+		return initialMovies
+	}, [localMode, filteredFavorites, movies, searchQuery, initialMovies])
+
+	const currentResponse = useMemo(() => {
+		if (localMode) return filteredFavorites.length > 0 ? SearchResponseStatus.Ok : SearchResponseStatus.NotFound
+		if (searchQuery.trim()) return responseStatus
+		return SearchResponseStatus.Ok
+	}, [localMode, filteredFavorites.length, responseStatus, searchQuery])
 
 	const handleSelect = useCallback(
 		async (movie: Movie) => {
@@ -45,46 +51,29 @@ const MovieWidget: React.FC<Props> = ({ localMode = false, title }) => {
 			setModalLoading(true)
 
 			try {
-				const data = await fetchMovieById(movie.imdbID)
-				const fullMovie = { ...movie, Plot: data.Plot, imdbRating: data.imdbRating }
+				const full = await fetchMovieById(movie.imdbID)
+				const fullMovie = { ...movie, ...full }
 				setSelectedMovie(fullMovie)
-				recentStorage.add(fullMovie)
-				setRecentMovies(recentStorage.getAll() as MovieFull[])
+				addRecent(fullMovie)
 			} catch (e) {
 				console.error(e)
 			} finally {
 				setModalLoading(false)
 			}
 		},
-		[favorites, localMode]
+		[addRecent]
 	)
-
-	const handleFavoriteToggle = useCallback(() => {
-		if (!localMode) return
-		const updated = favoritesStorage.getAll()
-		setFavorites(updated)
-	}, [favorites])
 
 	const handleCloseModal = useCallback(() => {
 		setSelectedMovie(null)
 	}, [])
 
-	const currentQuery = localMode ? localQuery : searchQuery
-
-	const currentMovies = useMemo(() => {
-		return localMode ? favoriteMovies : movies
-	}, [localMode, favoriteMovies, movies])
-
-	const currentResponse = useMemo(() => {
-		return localMode ? (favoriteMovies.length > 0 ? SearchResponseStatus.Ok : SearchResponseStatus.NotFound) : responseStatus
-	}, [localMode, favoriteMovies.length, responseStatus])
-
 	return (
 		<div className={styles.container}>
-			{recentMovies.length > 0 && !localMode && (
+			{recent.length > 0 && !localMode && (
 				<>
 					<h2 className={styles.sectionTitle}>Недавно просмотренные</h2>
-					<MovieList movies={recentMovies} isLoading={false} onSelect={handleSelect} responseStatus={SearchResponseStatus.Ok} isRecent />
+					<MovieList movies={recent} isLoading={false} onSelect={handleSelect} responseStatus={SearchResponseStatus.Ok} isRecent />
 				</>
 			)}
 
@@ -92,13 +81,18 @@ const MovieWidget: React.FC<Props> = ({ localMode = false, title }) => {
 				<SearchInput value={currentQuery} onChange={localMode ? setLocalQuery : setSearchQuery} showQueryPreview />
 			</div>
 
-			<>
-				<h2 className={styles.sectionTitle}>{title}</h2>
-				<MovieList movies={currentMovies} isLoading={!localMode && isLoading} onSelect={handleSelect} responseStatus={currentResponse} />
-			</>
+			{(localMode || (!localMode && !searchQuery.trim())) && <h2 className={styles.sectionTitle}>{title}</h2>}
+
+			<MovieList movies={currentMovies} isLoading={isLoading} onSelect={handleSelect} responseStatus={currentResponse} />
 
 			{selectedMovie && (
-				<MovieModal movie={selectedMovie} isLoading={modalLoading} onClose={handleCloseModal} onFavoriteToggle={handleFavoriteToggle} />
+				<MovieModal
+					movie={selectedMovie}
+					isLoading={modalLoading}
+					onClose={handleCloseModal}
+					onFavoriteToggle={() => toggleFavorite(selectedMovie)}
+					isFavorite={isFavorite(selectedMovie)}
+				/>
 			)}
 		</div>
 	)

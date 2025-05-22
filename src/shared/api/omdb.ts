@@ -22,10 +22,10 @@ class OMDbError extends Error {
 }
 
 // Получаем список фильмов по поиску
-export const fetchMoviesBySearch = async (query: string): Promise<Movie[]> => {
+export const fetchMoviesBySearch = async (query: string, extraParams: Record<string, string> = {}): Promise<Movie[]> => {
 	try {
 		const res = await axiosInstance.get<SearchResponse>('', {
-			params: { s: query },
+			params: { s: query, ...extraParams },
 		})
 
 		if (res.data.Response === 'False') {

@@ -46,7 +46,6 @@ export const storage = {
 }
 
 // Избранные фильмы
-// В целом, я бы использовал Zustand какой-нибудь для избранных, но пока что это не очень нужно, если у нас только одна страница где они отображаются
 export const favoritesStorage = {
 	getAll(): Movie[] {
 		return storage.get<Movie[]>(FAVORITES_KEY) ?? []
