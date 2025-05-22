@@ -16,26 +16,33 @@ http://localhost:3001
 
 ОПИСАНИЕ АРХИТЕКТУРЫ
 
-│
-├── src/
-│ ├── app/
-│ │ ├── layout.tsx # Обертка приложения
-│ │ └── globals.css # Глобальные стили
-│
-│ ├── page/ # Страницы
-│ │ └── home/, profile/
-│
-│ ├── shared/
-│ │ ├── api/ # Работа с API
-│ │ ├── components/ # Переиспользуемые компоненты (UI)
-│ │ ├── hooks/ # Кастомные хуки
-│ │ ├── providers/ # Провайдеры, например для React Query
-│ │ ├── types/ # Типы
-│ │ └── utils/ # Вспомогательные функции
-│
-│ └── widgets/
-│ └── MovieWidget/ # Главный виджет поиска фильмов
-└── package.json # Зависимости и скрипты
+<details>
+<summary>Структура проекта</summary>
+
+```
+src/
+├── app/
+│   ├── layout.tsx        # Обертка приложения
+│   └── globals.css       # Глобальные стили
+
+├── page/                 # Страницы
+│   └── home/, profile/
+
+├── shared/
+│   ├── api/              # Работа с API
+│   ├── components/       # Переиспользуемые компоненты (UI)
+│   ├── hooks/            # Кастомные хуки
+│   ├── providers/        # Провайдеры, например для React Query
+│   ├── types/            # Типы
+│   └── utils/            # Вспомогательные функции
+
+└── widgets/
+    └── MovieWidget/      # Главный виджет поиска фильмов
+
+package.json              # Зависимости и скрипты
+```
+
+</details>
 
 РЕАЛИЗОВАННЫЕ ФИЧИ
 
