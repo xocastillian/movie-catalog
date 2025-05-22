@@ -7,7 +7,7 @@ interface ProfileLayoutProps {
 }
 
 export const metadata: Metadata = {
-	title: 'Кино каталог | Главная',
+	title: 'Кино каталог | Профиль',
 	description: 'Избранные фильмы',
 }
 
