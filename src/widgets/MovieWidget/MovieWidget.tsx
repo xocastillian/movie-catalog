@@ -1,16 +1,16 @@
 'use client'
 
 import styles from './MovieWidget.module.css'
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useMovieSearch } from '@/shared/hooks/useMovieSearch'
 import { useFavorites } from '@/shared/hooks/useFavorites'
-import { useRecentMovies } from '@/shared/hooks/useRecentMovies'
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
 import { fetchMovieById } from '@/shared/api/omdb'
 import { Movie, SearchResponseStatus } from '@/shared/types'
 import { MovieList, MovieModal, SearchInput } from '@/shared/components'
 import { useQueryClient } from '@tanstack/react-query'
 import { STALE_TIME } from '@/shared/constants'
+import { useRecentStore } from '@/shared/stores/useRecentStore'
 
 interface Props {
 	localMode?: boolean
@@ -23,12 +23,14 @@ const MovieWidget: React.FC<Props> = ({ localMode = false, title, initialMovies 
 	const [modalLoading, setModalLoading] = useState(false)
 	const [localQuery, setLocalQuery] = useState('')
 	const { favorites, toggleFavorite, isFavorite } = useFavorites()
-	const { recent, addRecent } = useRecentMovies()
 	const { query: searchQuery, setQuery: setSearchQuery, movies, isLoading, responseStatus } = useMovieSearch()
 	const queryClient = useQueryClient()
+	const { recent, addRecent, init } = useRecentStore()
 	const currentQuery = localMode ? localQuery : searchQuery
 	const debouncedQuery = useDebouncedValue(currentQuery, 500)
 	const isSearchActive = !!searchQuery.trim()
+
+	useEffect(init, [])
 
 	const currentMovies = useMemo(() => {
 		const q = debouncedQuery.trim().toLowerCase()
