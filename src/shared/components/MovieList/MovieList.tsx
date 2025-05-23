@@ -8,10 +8,10 @@ import { memo } from 'react'
 
 interface Props {
 	movies: Movie[]
-	isLoading: boolean
 	onSelect: (movie: Movie) => void
 	responseStatus: SearchResponseStatus
 	isRecent?: boolean
+	isLoading?: boolean
 }
 
 const MovieList: React.FC<Props> = ({ movies, isLoading, onSelect, responseStatus, isRecent = false }) => {
