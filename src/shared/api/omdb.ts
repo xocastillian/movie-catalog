@@ -22,21 +22,35 @@ class OMDbError extends Error {
 }
 
 // Получаем список фильмов по поиску
-export const fetchMoviesBySearch = async (query: string, extraParams: Record<string, string> = {}): Promise<Movie[]> => {
-	try {
-		const res = await axiosInstance.get<SearchResponse>('', {
-			params: { s: query, ...extraParams },
-		})
+export const fetchMoviesBySearch = async (
+	query: string,
+	pageOrParams?: number | Record<string, string>,
+	extraParams: Record<string, string> = {}
+): Promise<Movie[]> => {
+	let page: number | undefined = undefined
+	let params: Record<string, string> = {}
 
-		if (res.data.Response === 'False') {
-			throw new OMDbError(res.data.Error || 'Ошибка поиска фильмов')
-		}
-
-		return res.data.Search
-	} catch (error) {
-		console.error('Ошибка в fetchMoviesBySearch:', error)
-		throw error
+	if (typeof pageOrParams === 'object') {
+		params = pageOrParams
+	} else {
+		page = pageOrParams ?? 1
+		params = extraParams
+		if (page < 1 || page > 100) throw new OMDbError('page должен быть от 1 до 100')
 	}
+
+	const finalParams: Record<string, string> = {
+		...(query.trim() ? { s: query.trim() } : {}),
+		...(page !== undefined ? { page: String(page) } : {}),
+		...params,
+	}
+
+	const res = await axiosInstance.get<SearchResponse>('', { params: finalParams })
+
+	if (res.data.Response === 'False') {
+		throw new OMDbError(res.data.Error || 'Ошибка поиска фильмов')
+	}
+
+	return res.data.Search
 }
 
 // Получаем расширенную информацию по ID

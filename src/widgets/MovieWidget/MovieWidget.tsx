@@ -1,16 +1,9 @@
 'use client'
 
 import styles from './MovieWidget.module.css'
-import { useState, useMemo, useCallback, useEffect } from 'react'
-import { useMovieSearch } from '@/shared/hooks/useMovieSearch'
-import { useFavorites } from '@/shared/hooks/useFavorites'
-import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue'
-import { fetchMovieById } from '@/shared/api/omdb'
+import { MovieModal, MovieList, SearchInput, Loader } from '@/shared/components'
 import { Movie, SearchResponseStatus } from '@/shared/types'
-import { MovieList, MovieModal, SearchInput } from '@/shared/components'
-import { useQueryClient } from '@tanstack/react-query'
-import { STALE_TIME } from '@/shared/constants'
-import { useRecentStore } from '@/shared/stores/useRecentStore'
+import { useMovieWidgetLogic } from '@/shared/hooks/useMovieWidgetLogic'
 
 interface Props {
 	localMode?: boolean
@@ -19,62 +12,26 @@ interface Props {
 }
 
 const MovieWidget: React.FC<Props> = ({ localMode = false, title, initialMovies = [] }) => {
-	const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null)
-	const [modalLoading, setModalLoading] = useState(false)
-	const [localQuery, setLocalQuery] = useState('')
-	const { favorites, toggleFavorite, isFavorite } = useFavorites()
-	const { query: searchQuery, setQuery: setSearchQuery, movies, isLoading, responseStatus } = useMovieSearch()
-	const queryClient = useQueryClient()
-	const { recent, addRecent, init } = useRecentStore()
-	const currentQuery = localMode ? localQuery : searchQuery
-	const debouncedQuery = useDebouncedValue(currentQuery, 500)
-	const isSearchActive = !!searchQuery.trim()
+	const {
+		currentQuery,
+		setQuery,
+		setLocalQuery,
+		selectedMovie,
+		modalLoading,
+		handleSelect,
+		handleCloseModal,
+		currentMovies,
+		currentResponse,
+		isLoading,
+		isFetchingNextPage,
+		hasNextPage,
+		observerRef,
+		recent,
+		toggleFavorite,
+		isFavorite,
+	} = useMovieWidgetLogic(initialMovies, localMode)
 
-	useEffect(init, [])
-
-	const currentMovies = useMemo(() => {
-		const q = debouncedQuery.trim().toLowerCase()
-
-		if (localMode) return q ? favorites.filter(m => m.Title.toLowerCase().includes(q)) : favorites
-		if (isSearchActive) return movies
-
-		return initialMovies
-	}, [localMode, favorites, debouncedQuery, isSearchActive, movies, initialMovies])
-
-	const currentResponse = useMemo(() => {
-		if (localMode) return currentMovies.length ? SearchResponseStatus.Ok : SearchResponseStatus.NotFound
-		if (isSearchActive) return responseStatus
-
-		return SearchResponseStatus.Ok
-	}, [localMode, currentMovies, isSearchActive, responseStatus])
-
-	const handleSelect = useCallback(
-		async (movie: Movie) => {
-			setSelectedMovie(movie)
-			setModalLoading(true)
-
-			try {
-				const full = await queryClient.fetchQuery({
-					queryKey: ['movie', movie.imdbID],
-					queryFn: () => fetchMovieById(movie.imdbID),
-					staleTime: STALE_TIME,
-				})
-
-				const fullMovie = { ...movie, ...full }
-				setSelectedMovie(fullMovie)
-				addRecent(fullMovie)
-			} catch (e) {
-				console.error(e)
-			} finally {
-				setModalLoading(false)
-			}
-		},
-		[addRecent, queryClient]
-	)
-
-	const handleCloseModal = useCallback(() => {
-		setSelectedMovie(null)
-	}, [])
+	const isSearchInactive = localMode || !currentQuery.trim()
 
 	return (
 		<div className={styles.container}>
@@ -86,12 +43,19 @@ const MovieWidget: React.FC<Props> = ({ localMode = false, title, initialMovies 
 			)}
 
 			<div className={styles.searchContainer}>
-				<SearchInput value={currentQuery} onChange={localMode ? setLocalQuery : setSearchQuery} showQueryPreview />
+				<SearchInput value={currentQuery} onChange={localMode ? setLocalQuery : setQuery} showQueryPreview />
 			</div>
 
-			{(localMode || !isSearchActive) && <h2 className={styles.sectionTitle}>{title}</h2>}
+			{isSearchInactive && <h2 className={styles.sectionTitle}>{title}</h2>}
 
 			<MovieList movies={currentMovies} isLoading={isLoading} onSelect={handleSelect} responseStatus={currentResponse} />
+
+			{hasNextPage && !localMode && (
+				<>
+					{isFetchingNextPage && <Loader />}
+					<div ref={observerRef} className={styles.scrollObserver} />
+				</>
+			)}
 
 			{selectedMovie && (
 				<MovieModal
