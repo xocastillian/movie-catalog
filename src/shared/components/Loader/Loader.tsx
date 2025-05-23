@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './Loader.module.css'
 import clsx from 'clsx'
 
-type LoaderProps = {
+interface LoaderProps {
 	size?: number
 	fullscreen?: boolean
 	className?: string

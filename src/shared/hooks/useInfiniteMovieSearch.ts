@@ -3,6 +3,7 @@ import { fetchMoviesBySearch } from '@/shared/api/omdb'
 import { SearchResponseStatus } from '@/shared/types'
 import { STALE_TIME } from '../constants'
 
+// Получаем список фильмов по поиску + пагинация (инфинит скролл)
 export const useInfiniteMovieSearch = (query: string) => {
 	const trimmedQuery = query.trim()
 

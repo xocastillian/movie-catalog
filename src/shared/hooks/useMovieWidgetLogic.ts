@@ -8,6 +8,11 @@ import { STALE_TIME } from '@/shared/constants'
 import { Movie, SearchResponseStatus } from '@/shared/types'
 import { useInfiniteMovieSearch } from './useInfiniteMovieSearch'
 
+/**
+ * Хук-обёртка над IntersectionObserver.
+ * Следит за элементом ref и вызывает callback при его пересечении,
+ * если enabled === true.
+ */
 const useIntersectionObserver = (ref: React.RefObject<HTMLElement | null>, callback: () => void, enabled: boolean) => {
 	useEffect(() => {
 		const node = ref.current
@@ -32,7 +37,10 @@ export const useMovieWidgetLogic = (initialMovies: Movie[], localMode: boolean) 
 
 	useEffect(init, [])
 
+	// Текущий текст запроса: из общего состояния или локального
 	const rawQuery = localMode ? localQuery : query
+
+	// debounce
 	const debouncedQuery = useDebouncedValue(rawQuery, 500)
 	const isSearchEnabled = !localMode && !!debouncedQuery.trim()
 
@@ -40,6 +48,11 @@ export const useMovieWidgetLogic = (initialMovies: Movie[], localMode: boolean) 
 		localMode ? '' : debouncedQuery
 	)
 
+	/**
+	 * Расчёт списка отображаемых фильмов
+	 * - в localMode фильтруем избранные по rawQuery (без debounce)
+	 * - иначе отображаем API-результаты
+	 */
 	const currentMovies = useMemo(() => {
 		if (localMode) {
 			const q = rawQuery.trim().toLowerCase()
@@ -48,12 +61,23 @@ export const useMovieWidgetLogic = (initialMovies: Movie[], localMode: boolean) 
 		return isSearchEnabled ? movies : initialMovies
 	}, [localMode, favorites, rawQuery, isSearchEnabled, movies, initialMovies])
 
+	/**
+	 * Расчёт текущего статуса ответа
+	 * - если нет фильмов → NotFound
+	 * - если есть → Ok
+	 * - используется для отображения заглушек
+	 */
 	const currentResponse = useMemo(() => {
 		if (localMode) return currentMovies.length ? SearchResponseStatus.Ok : SearchResponseStatus.NotFound
 		if (isSearchEnabled) return responseStatus
 		return SearchResponseStatus.Ok
 	}, [localMode, currentMovies, isSearchEnabled, responseStatus])
 
+	/**
+	 * Открытие модалки фильма
+	 * - получает полную информацию
+	 * - добавляет в список просмотренных
+	 */
 	const handleSelect = useCallback(
 		async (movie: Movie) => {
 			setSelectedMovie(movie)
@@ -77,6 +101,7 @@ export const useMovieWidgetLogic = (initialMovies: Movie[], localMode: boolean) 
 
 	const handleCloseModal = useCallback(() => setSelectedMovie(null), [])
 
+	// Инициализация бесконечной прокрутки
 	useIntersectionObserver(observerRef, fetchNextPage, hasNextPage && !isLoading && !isFetchingNextPage && isSearchEnabled && !localMode)
 
 	return {

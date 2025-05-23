@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { favoritesStorage } from '@/shared/utils/storage'
 import { Movie } from '@/shared/types'
 
+// хук для работы с избранными фильмами
 export const useFavorites = () => {
 	const [favorites, setFavorites] = useState<Movie[]>([])
 
